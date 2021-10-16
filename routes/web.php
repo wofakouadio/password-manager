@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Admin\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,9 +18,18 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-// route to login page
+// route to index page
 Route::get('/', function(){
     return view('index');
+});
+
+// Route::resource('/admin/users', UserController::class);
+
+// admin routes
+Route::prefix('admin')->name('admin.')->group(function(){
+
+    Route::resource('/users', UserController::class);
+
 });
  
 
