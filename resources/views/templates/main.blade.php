@@ -41,7 +41,7 @@
 <nav class="navbar navbar-expand-lg">
     <div class="container">
 
-      <a class="navbar-brand" href="#">{{ config('app.name','Password Manager')}}</a>
+      <a class="navbar-brand" href="{{ url('/') }}">{{ config('app.name','Password Manager')}}</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -60,13 +60,19 @@
         @if (Route::has('login'))
         <div class="">
             @auth
-            <a href="{{ url('/home') }}">Home</a>
+            <a href="{{ url('/home') }}">Home | </a>
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+
+            {{-- form to logout --}}
+            <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none">
+              @csrf            
+            </form>
             @else
-            <a href="{{ route('login') }}">Log in</a>
-              |  
-            @if (Route::has('register'))
-            <a href="{{ route('register') }}">Register</a>
-            @endif
+              <a href="{{ route('login') }}">Log in</a>
+                |  
+              @if (Route::has('register'))
+              <a href="{{ route('register') }}">Register</a>
+              @endif
             @endauth
         </div>
         @endif
