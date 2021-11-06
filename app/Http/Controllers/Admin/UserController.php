@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use App\Http\Requests\StoreUserRequest;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -17,6 +19,10 @@ class UserController extends Controller
     public function index()
     {
         // $users = User::all();
+        if(Gate::denies('logged-in')){
+
+            dd('no access allowed');
+        }
         return view('admin.users.index', ['users' => User::paginate(10)]);
     }
 
@@ -36,10 +42,13 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->except(['_token', 'roles']));
+        $validatedData = $request->validated();
+        
+        $user = User::create($validatedData);
         $user->roles()->sync($request->roles);
+        $request->session()->flash('success', 'You have created the user successful');
         return redirect(route('admin.users.index'));
     }
 
@@ -79,9 +88,21 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $user->update($request->except(['_token', 'roles']));
-        $user->roles()->sync($request->roles);
-        return redirect(route('admin.users.index')); 
+
+        if(!$user){
+
+            $request->session()->flash('error', 'This User does not exist.');
+            return redirect(route('admin.users.index')); 
+
+        }else{
+        
+            $user->update($request->except(['_token', 'roles']));
+            $user->roles()->sync($request->roles);
+            $request->session()->flash('success', 'You have updated the user successful');
+            return redirect(route('admin.users.index')); 
+
+        }
+
     }
 
     /**
@@ -90,9 +111,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         User::destroy($id);
+        $request->session()->flash('success', 'You have deleted the user successful');
         return redirect(route('admin.users.index'));
     }
 }
