@@ -23,6 +23,7 @@
                 <th>#ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                {{-- <th>Role</th> --}}
                 <th>Actions</th>
             </tr>
         </thead>
@@ -33,6 +34,7 @@
                     <td scope="row">{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
+                    {{-- <td>{{ $user->role }}</td> --}}
                     <td>
                         <a class='btn btn-sm btn-primary' href='{{ route('admin.users.edit', $user->id) }}' role='button'>Edit</a>
 
